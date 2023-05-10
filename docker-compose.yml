@@ -2,6 +2,10 @@
 
 version: '3.8'
 
+
+
+### NOTIFICATIONS SERVICE ###
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.0
@@ -37,7 +41,7 @@ services:
       - kafka-network
 
   notifications-service:
-    build: .
+    build: notifications-service
     ports:
       - "8085:8085"
     depends_on:
@@ -49,3 +53,6 @@ services:
 
 networks:
   kafka-network:
+
+
+#############################
