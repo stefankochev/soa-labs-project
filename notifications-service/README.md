@@ -2,7 +2,7 @@
 
 ### Notifications Service
 
-To start the service run: `docker compose up -d`
+To start the service run: `docker-compose up -d`
 
 #### To test messaging:
 ```http
