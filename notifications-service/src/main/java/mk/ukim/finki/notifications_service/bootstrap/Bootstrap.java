@@ -17,7 +17,6 @@ public class Bootstrap {
 
     @PostConstruct
     public void initialFunction() {
-        //For testing purposes.
 
 
 

@@ -10,7 +10,7 @@
     </parent>
     <groupId>mk.ukim.finki</groupId>
     <artifactId>notifications-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>notifications-service</name>
     <description>notifications-service</description>
     <properties>
@@ -26,7 +26,17 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
-<!--        &lt;!&ndash; JavaMail &ndash;&gt;-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+        </dependency>
+
+
+        <!--        &lt;!&ndash; JavaMail &ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>javax.mail</groupId>-->
 <!--            <artifactId>javax.mail-api</artifactId>-->
