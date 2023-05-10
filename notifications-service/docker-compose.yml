@@ -36,15 +36,6 @@ services:
     networks:
       - kafka-network
 
-#  kafka-manager:
-#    image: hlebalbau/kafka-manager:latest
-#    ports:
-#      - "9000:9000"
-#    environment:
-#      ZK_HOSTS: zookeeper:2181
-#    networks:
-#      - kafka-network
-
   notifications-service:
     build: .
     ports:
