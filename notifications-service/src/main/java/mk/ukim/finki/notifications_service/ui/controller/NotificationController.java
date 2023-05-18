@@ -4,9 +4,14 @@ import lombok.extern.log4j.Log4j2;
 import mk.ukim.finki.notifications_service.messaging.NotificationProducer;
 import mk.ukim.finki.notifications_service.model.PostNotification;
 import mk.ukim.finki.notifications_service.service.MailService;
+import mk.ukim.finki.notifications_service.service.PostNotificationService;
 import mk.ukim.finki.notifications_service.ui.dao.SendMailRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @Log4j2
@@ -14,6 +19,9 @@ public class NotificationController {
 
     private final MailService mailService;
     private final NotificationProducer notificationProducer;
+
+    @Autowired
+    private PostNotificationService notificationService;
 
     public NotificationController(MailService mailService, NotificationProducer notificationProducer) {
         this.mailService = mailService;
@@ -40,10 +48,16 @@ public class NotificationController {
         PostNotification message = PostNotification.builder()
                 .recipientEmail("somemail@gmail.com")
                 .notificationContent("Some random content.")
+                .sendDate(LocalDateTime.now().plusMinutes(2))
                 .build();
         notificationProducer.sendNotificationMessage("posts", message);
 
         return "Tested.";
+    }
+
+    @GetMapping(path = "/get")
+    public ResponseEntity<List<PostNotification>> getAll() {
+        return ResponseEntity.ok(notificationService.getAllPostNotifications());
     }
 
 }

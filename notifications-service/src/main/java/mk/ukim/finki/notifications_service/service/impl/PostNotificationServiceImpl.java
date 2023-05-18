@@ -1,6 +1,7 @@
 package mk.ukim.finki.notifications_service.service.impl;
 
 import mk.ukim.finki.notifications_service.model.PostNotification;
+import mk.ukim.finki.notifications_service.model.enumeration.MailStatus;
 import mk.ukim.finki.notifications_service.repository.PostNotificationRepository;
 import mk.ukim.finki.notifications_service.service.PostNotificationService;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,10 @@ public class PostNotificationServiceImpl implements PostNotificationService {
     }
 
     public PostNotification createPostNotification(PostNotification postNotification) {
-        return postNotificationRepository.save(postNotification);
+        System.out.println("Should save in db");
+        postNotificationRepository.save(postNotification);
+        System.out.println("saved in db");
+        return postNotification;
     }
 
     public Optional<PostNotification> getPostNotificationById(Long id) {
@@ -40,6 +44,7 @@ public class PostNotificationServiceImpl implements PostNotificationService {
 
         existingPostNotification.setRecipientEmail(updatedPostNotification.getRecipientEmail());
         existingPostNotification.setNotificationContent(updatedPostNotification.getNotificationContent());
+        existingPostNotification.setMailStatus(updatedPostNotification.getMailStatus());
 
         return postNotificationRepository.save(existingPostNotification);
     }
@@ -57,6 +62,11 @@ public class PostNotificationServiceImpl implements PostNotificationService {
 
     public long countPostNotifications() {
         return postNotificationRepository.count();
+    }
+
+    @Override
+    public List<PostNotification> findAllByStatus(MailStatus status) {
+        return postNotificationRepository.findByMailStatus(status);
     }
 
 }

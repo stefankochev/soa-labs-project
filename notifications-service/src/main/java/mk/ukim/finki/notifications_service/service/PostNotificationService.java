@@ -1,6 +1,7 @@
 package mk.ukim.finki.notifications_service.service;
 
 import mk.ukim.finki.notifications_service.model.PostNotification;
+import mk.ukim.finki.notifications_service.model.enumeration.MailStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +25,6 @@ public interface PostNotificationService {
     List<PostNotification> getPostNotificationsByNotificationContentContaining(String keyword);
 
     long countPostNotifications();
+
+    List<PostNotification> findAllByStatus(MailStatus status);
 }
