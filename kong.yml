@@ -1,0 +1,18 @@
+_format_version: "2.1"
+
+services:
+  - name: app1
+    url: http://host.docker.internal:81/app1
+    routes:
+        - name: app1-route
+          paths:
+            - /app1
+  
+  - name: app2
+    url: http://host.docker.internal:82/app2
+    routes:
+        - name: app2-route
+          paths:
+            - /app2
+
+
