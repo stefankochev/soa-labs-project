@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-## Service Oriented Architecture - Microservices - Labs Project
 
-TBD
-=======
+# Service Oriented Architecture - Microservices - Labs Project
 # SOA API Gateway
 
 
@@ -52,5 +49,3 @@ To access the endpoints of your backend applications through Kong API Gateway, u
 * If you encounter any issues, check the Kong API Gateway logs by running the following command:
 * `docker compose logs`
 * Ensure that your backend applications are running and accessible directly without going through Kong. You can test accessing the endpoints of your applications directly using their respective URLs.
-
->>>>>>> master
