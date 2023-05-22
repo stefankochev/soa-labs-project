@@ -1,8 +1,4 @@
-
-
 version: '3.8'
-
-
 
 ### NOTIFICATIONS SERVICE ###
 
@@ -51,8 +47,20 @@ services:
     networks:
       - kafka-network
 
+  #############################
+
+  ### WEB FRONTEND ###
+
+  web-frontend:
+    container_name: web-frontend
+    build: web-frontend
+    ports:
+      - "80:80"
+    networks:
+      - web-frontend
+
+#############################    
+
 networks:
   kafka-network:
-
-
-#############################
+  web-frontend:
