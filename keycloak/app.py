@@ -17,15 +17,17 @@ from fastapi_keycloak import (
 )
 from fastapi_keycloak.model import KeycloakCreateUser, KeycloakToken
 
-app = FastAPI()
 idp = FastAPIKeycloak(
-    server_url="http://localhost:8085/auth",
+    server_url="http://192.168.0.107:8085/auth",
+    # server_url="http://localhost:8085/auth",
     client_id="soa-client",
     client_secret="GzgACcJzhzQ4j8kWhmhazt7WSdxDVUyE",
     admin_client_secret="BIcczGsZ6I8W5zf0rZg5qSexlloQLPKB",
     realm="SOA",
+    # callback_uri="http://192.168.0.107:8081/callback",
     callback_uri="http://localhost:8081/callback"
 )
+app = FastAPI()
 idp.add_swagger_config(app)
 
 
@@ -175,7 +177,8 @@ def delete_groups(group_id: str, user: OIDCUser = Depends(idp.get_current_user()
 # User Roles
 
 @app.post("/users/{user_id}/roles", tags=["user-roles"])
-def add_roles_to_user(user_id: str, roles: Optional[List[str]] = Query(None), user: OIDCUser = Depends(idp.get_current_user())):
+def add_roles_to_user(user_id: str, roles: Optional[List[str]] = Query(None),
+                      user: OIDCUser = Depends(idp.get_current_user())):
     return idp.add_user_roles(user_id=user_id, roles=roles)
 
 
@@ -185,7 +188,8 @@ def get_user_roles(user_id: str, user: OIDCUser = Depends(idp.get_current_user()
 
 
 @app.delete("/users/{user_id}/roles", tags=["user-roles"])
-def delete_roles_from_user(user_id: str, roles: Optional[List[str]] = Query(None), user: OIDCUser = Depends(idp.get_current_user())):
+def delete_roles_from_user(user_id: str, roles: Optional[List[str]] = Query(None),
+                           user: OIDCUser = Depends(idp.get_current_user())):
     return idp.remove_user_roles(user_id=user_id, roles=roles)
 
 
@@ -249,7 +253,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    uvicorn.run('app:app', host="127.0.0.1", port=8081)
+    uvicorn.run('app:app', host="0.0.0.0", port=8081)
 
-
-# TODO slajd 31/32 !!!
