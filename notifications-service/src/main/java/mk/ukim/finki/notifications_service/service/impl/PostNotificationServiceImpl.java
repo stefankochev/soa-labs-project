@@ -90,7 +90,7 @@ public class PostNotificationServiceImpl implements PostNotificationService {
 
     private long compareDates(LocalDateTime date, LocalDateTime date2) {
         System.out.println("compared dates" + ChronoUnit.MINUTES.between(date, date2));
-        return ChronoUnit.MINUTES.between(date2, date);
+        return ChronoUnit.SECONDS.between(date2, date);
     }
 
 }

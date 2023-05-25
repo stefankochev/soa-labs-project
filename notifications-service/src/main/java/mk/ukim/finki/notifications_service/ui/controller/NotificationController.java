@@ -3,6 +3,7 @@ package mk.ukim.finki.notifications_service.ui.controller;
 import lombok.extern.log4j.Log4j2;
 import mk.ukim.finki.notifications_service.messaging.NotificationProducer;
 import mk.ukim.finki.notifications_service.model.PostNotification;
+import mk.ukim.finki.notifications_service.model.enumeration.MailStatus;
 import mk.ukim.finki.notifications_service.service.MailService;
 import mk.ukim.finki.notifications_service.service.PostNotificationService;
 import mk.ukim.finki.notifications_service.ui.dao.SendMailRequest;
@@ -29,10 +30,19 @@ public class NotificationController {
     }
 
     @PostMapping(path = "/api/v1/notifications/sendMail")
-    public ResponseEntity<Object> sendMail(@RequestBody SendMailRequest request) {
+    public ResponseEntity<Object> sendMail(@RequestBody PostNotification request) {
 
         try {
-            mailService.sendMail(request.to(), request.subject(), request.text());
+            if (request.getSendDate() != null) {
+                request.setMailStatus(MailStatus.WAITING);
+                System.out.println("Kafka should save");
+                notificationService.createPostNotification(request);
+                System.out.println("kafka saved");
+            } else {
+                mailService.sendMail(request.getRecipientEmail(),
+                        request.getSubject(),
+                        request.getNotificationContent());
+            }
             return ResponseEntity.ok("Mail request has been fulfilled:\n"+ request);
         } catch (Exception e) {
             log.error("Caught exception: " + e.getMessage());

@@ -39,7 +39,7 @@ public class NotificationConsumer {
                 System.out.println("kafka saved");
             } else {
                 mailService.sendMail(postNotification.getRecipientEmail(),
-                        "Post Notification",
+                        postNotification.getSubject(),
                         postNotification.getNotificationContent());
             }
 
