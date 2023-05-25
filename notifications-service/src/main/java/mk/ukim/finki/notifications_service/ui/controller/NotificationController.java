@@ -42,6 +42,11 @@ public class NotificationController {
 
     }
 
+    @GetMapping(path = "/api/v1/notifications/scheduled")
+    public void snedScheduledNotifications() {
+        notificationService.sendSchedulerNotifications();
+    }
+
     @GetMapping(path = "/testMessaging")
     public String testMessaging() {
 

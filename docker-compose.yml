@@ -29,7 +29,6 @@ services:
       - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
     networks:
       - kafka-network
-    network_mode: bridge
 
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
@@ -51,8 +50,20 @@ services:
     networks:
       - kafka-network
 
+  scheduler-service:
+    build: scheduler-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      - notifications-service
+    environment:
+      - NOTIFICATION_SERVICE_ENDPOINT=notification-service:8085
+    networks:
+      - kafka-network
+
 networks:
   kafka-network:
+    driver: bridge
 
 
 #############################

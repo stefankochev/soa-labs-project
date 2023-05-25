@@ -18,6 +18,8 @@ public interface PostNotificationService {
 
     PostNotification updatePostNotification(Long id, PostNotification updatedPostNotification);
 
+    void sendSchedulerNotifications();
+
     // Additional methods
 
     List<PostNotification> getPostNotificationsByRecipientEmail(String recipientEmail);

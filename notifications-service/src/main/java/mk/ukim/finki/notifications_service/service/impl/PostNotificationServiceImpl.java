@@ -3,15 +3,23 @@ package mk.ukim.finki.notifications_service.service.impl;
 import mk.ukim.finki.notifications_service.model.PostNotification;
 import mk.ukim.finki.notifications_service.model.enumeration.MailStatus;
 import mk.ukim.finki.notifications_service.repository.PostNotificationRepository;
+import mk.ukim.finki.notifications_service.service.MailService;
 import mk.ukim.finki.notifications_service.service.PostNotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostNotificationServiceImpl implements PostNotificationService {
+
+    @Autowired
+    private MailService mailService;
 
     private final PostNotificationRepository postNotificationRepository;
 
@@ -49,8 +57,19 @@ public class PostNotificationServiceImpl implements PostNotificationService {
         return postNotificationRepository.save(existingPostNotification);
     }
 
+    @Override
+    public void sendSchedulerNotifications() {
+        List<PostNotification> notifications = this.findAllByStatus(MailStatus.WAITING);
+        notifications = notifications.stream()
+                .filter(x -> compareDates(x.getSendDate(), LocalDateTime.now()) <= 0)
+                .collect(Collectors.toList());
 
-
+        for (PostNotification notification : notifications) {
+            mailService.sendMail(notification.getRecipientEmail(), notification.getSubject(), notification.getNotificationContent());
+            notification.setMailStatus(MailStatus.COMPLETED);
+            this.updatePostNotification(notification.getId(), notification);
+        }
+    }
 
     public List<PostNotification> getPostNotificationsByRecipientEmail(String recipientEmail) {
         return postNotificationRepository.findByRecipientEmail(recipientEmail);
@@ -67,6 +86,11 @@ public class PostNotificationServiceImpl implements PostNotificationService {
     @Override
     public List<PostNotification> findAllByStatus(MailStatus status) {
         return postNotificationRepository.findByMailStatus(status);
+    }
+
+    private long compareDates(LocalDateTime date, LocalDateTime date2) {
+        System.out.println("compared dates" + ChronoUnit.MINUTES.between(date, date2));
+        return ChronoUnit.MINUTES.between(date2, date);
     }
 
 }
