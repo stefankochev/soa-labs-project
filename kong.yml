@@ -1,0 +1,30 @@
+_format_version: "2.1"
+
+services:
+  - name: app1
+    url: http://host.docker.internal:81
+    routes:
+        - name: app1-route
+          paths:
+            - /app1
+  
+  - name: app2
+    url: http://host.docker.internal:82
+    routes:
+        - name: app2-route
+          paths:
+            - /app2
+            
+  - name: notifications-service
+    url: http://host.docker.internal:8085
+    routes:
+      - name: notifications-service-route
+        paths:
+          - /notifications-service
+
+  - name: kafdrop
+    url: http://host.docker.internal:9000
+    routes:
+      - name: kafdrop-route
+        paths:
+          - /kafdrop

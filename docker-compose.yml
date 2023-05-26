@@ -1,12 +1,47 @@
+version: '3.9'
 
-
-version: '3.8'
-
-
-
-### NOTIFICATIONS SERVICE ###
-
+networks:
+  kong-net:
+    external: false
+  kafka-network:
+#api gateway
 services:
+  kong:
+      image: kong:latest
+      volumes:
+        - ./kong.yml:/usr/local/kong/declarative/kong.yml
+      environment:
+        - KONG_DATABASE=off
+        - KONG_DECLARATIVE_CONFIG=/usr/local/kong/declarative/kong.yml
+        - KONG_PROXY_ACCESS_LOG=/dev/stdout
+        - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+        - KONG_PROXY_ERROR_LOG=/dev/stderr
+        - KONG_ADMIN_ERROR_LOG=/dev/stderr
+        - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+      ports:
+        - "8000:8000"
+        - "8443:8443"
+        - "127.0.0.1:8001:8001"
+        - "127.0.0.1:8444:8444"
+        
+  app1:
+    build:
+      context: ./app1 
+      dockerfile: Dockerfile 
+    networks:
+      - kong-net
+    ports:
+      - "81:80"
+
+  app2:
+    build:
+      context: ./app2 
+      dockerfile: Dockerfile 
+    networks:
+      - kong-net
+    ports:
+      - "82:80"
+
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.0
     ports:
@@ -50,9 +85,3 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks:
       - kafka-network
-
-networks:
-  kafka-network:
-
-
-#############################
