@@ -1,24 +1,28 @@
 ## Service Oriented Architecture - Microservices - Labs Project
-# SOA API Gateway
 
-## Prerequiste
 
-Make sure [`Docker`]([http](https://www.docker.com/)) is installed and running
+### Prerequisites
 
-## Project structure
+Make sure [`Docker`]([http](https://www.docker.com/)) is installed and running.
+
+### SOA API Gateway
+
+
+### Project structure
 ```
-Kong/
+./
 ├── app1/
 │   ├── main.py
 │   └── Dockerfile
 ├── app2/
 │   ├── main.py
 │   └── Dockerfile
-├── docker-compose.yml
 |── kong/
 |   |── kong.yml
+├── docker-compose.yml
 └── README.md
 ```
+
 * `app1/` and `app2/` directories contain the source code and Dockerfiles for testing purposes.
 
 * `docker-compose.yml` defines the services and their configurations, including the Kong API Gateway and your backend applications.
@@ -27,7 +31,7 @@ Kong/
 
 * `README.md` is a Markdown file that provides instructions and information about the project.
 
-## Running
+### Running
 
 `docker compose up`
 
@@ -36,7 +40,7 @@ Launches 3 docker containers
 * `app1` starts [`FastAPI`](https://fastapi.tiangolo.com/) application with port `81`
 * `app2` starts [`FastAPI`](https://fastapi.tiangolo.com/) application with port `80`
 
-## Accessing The Endpoints
+### Accessing The Endpoints
 
 To access the services through Kong API Gateway, use the following URLs:
 
@@ -45,7 +49,7 @@ To access the services through Kong API Gateway, use the following URLs:
 * `http://localhost:8000/notifications-service/{end-point}`: Accesses the `/{end-point}` endpoint of notifications service
 * `http://localhost:8000/kafdrop/{end-point}`: Accesses the `/{end-point}` endpoint of kafdrop
 
-## Troubleshooting
+### Troubleshooting
 
 * If you encounter any issues, check the Kong API Gateway logs by running the following command:
 * `docker compose logs`
