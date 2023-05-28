@@ -14,23 +14,21 @@ services:
       - KONG_ADMIN_ERROR_LOG=/dev/stderr
       - KONG_ADMIN_LISTEN=0.0.0.0:8001,0.0.0.0:8444 ssl
     ports:
-      - "8000:8000"
-      - "8443:8443"
-      - "127.0.0.1:8001:8001"
-      - "127.0.0.1:8444:8444"
+      - 8000:8000
+      - 8443:8443
+      - 127.0.0.1:8001:8001
+      - 127.0.0.1:8444:8444
     networks:
       - kong-net
 
-  # sample app 1
-  app1:
+  app1: # sample app 1
     build:
       context: app1
       dockerfile: Dockerfile
     networks:
       - kong-net
 
-  # sample app 2
-  app2:
+  app2: # sample app 2
     build:
       context: app2
       dockerfile: Dockerfile
@@ -72,8 +70,6 @@ services:
 
   notifications-service:
     build: notifications-service
-    ports:
-      - "8085:8085"
     depends_on:
       - kafka
     environment:
@@ -82,12 +78,10 @@ services:
       - kafka-network
       - kong-net
 
-
   web-frontend:
-    container_name: web-frontend
     build: web-frontend
     ports:
-      - "80:80"
+      - 80:80
     networks:
       - web-frontend
 
