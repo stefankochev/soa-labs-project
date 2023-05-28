@@ -57,7 +57,7 @@ services:
     depends_on:
       - notifications-service
     environment:
-      - NOTIFICATION_SERVICE_ENDPOINT=notification-service:8085
+      - NOTIFICATION_SERVICE_ENDPOINT=notifications-service:8085
     networks:
       - kafka-network
 

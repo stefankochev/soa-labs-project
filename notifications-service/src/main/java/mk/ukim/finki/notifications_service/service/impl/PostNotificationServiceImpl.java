@@ -1,6 +1,7 @@
 package mk.ukim.finki.notifications_service.service.impl;
 
 import jakarta.mail.MessagingException;
+import lombok.extern.log4j.Log4j2;
 import mk.ukim.finki.notifications_service.model.PostNotification;
 import mk.ukim.finki.notifications_service.model.enumeration.MailStatus;
 import mk.ukim.finki.notifications_service.repository.PostNotificationRepository;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 public class PostNotificationServiceImpl implements PostNotificationService {
 
     @Autowired
@@ -60,6 +62,9 @@ public class PostNotificationServiceImpl implements PostNotificationService {
 
     @Override
     public void sendSchedulerNotifications() throws MessagingException {
+
+        log.info("Scheduled posts are being sent.");
+
         List<PostNotification> notifications = this.findAllByStatus(MailStatus.WAITING);
         notifications = notifications.stream()
                 .filter(x -> compareDates(x.getSendDate(), LocalDateTime.now()) <= 0)

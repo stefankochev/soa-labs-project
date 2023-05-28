@@ -7,7 +7,6 @@ import mk.ukim.finki.notifications_service.model.PostNotification;
 import mk.ukim.finki.notifications_service.model.enumeration.MailStatus;
 import mk.ukim.finki.notifications_service.service.MailService;
 import mk.ukim.finki.notifications_service.service.PostNotificationService;
-import mk.ukim.finki.notifications_service.ui.dao.SendMailRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +53,7 @@ public class NotificationController {
     }
 
     @GetMapping(path = "/api/v1/notifications/scheduled")
-    public void snedScheduledNotifications() throws MessagingException {
+    public void sendScheduledNotifications() throws MessagingException {
         notificationService.sendSchedulerNotifications();
     }
 
