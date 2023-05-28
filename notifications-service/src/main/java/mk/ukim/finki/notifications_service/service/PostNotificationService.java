@@ -1,5 +1,6 @@
 package mk.ukim.finki.notifications_service.service;
 
+import jakarta.mail.MessagingException;
 import mk.ukim.finki.notifications_service.model.PostNotification;
 import mk.ukim.finki.notifications_service.model.enumeration.MailStatus;
 
@@ -18,7 +19,7 @@ public interface PostNotificationService {
 
     PostNotification updatePostNotification(Long id, PostNotification updatedPostNotification);
 
-    void sendSchedulerNotifications();
+    void sendSchedulerNotifications() throws MessagingException;
 
     // Additional methods
 

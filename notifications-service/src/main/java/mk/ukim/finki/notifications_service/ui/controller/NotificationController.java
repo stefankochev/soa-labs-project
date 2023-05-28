@@ -1,5 +1,6 @@
 package mk.ukim.finki.notifications_service.ui.controller;
 
+import jakarta.mail.MessagingException;
 import lombok.extern.log4j.Log4j2;
 import mk.ukim.finki.notifications_service.messaging.NotificationProducer;
 import mk.ukim.finki.notifications_service.model.PostNotification;
@@ -53,7 +54,7 @@ public class NotificationController {
     }
 
     @GetMapping(path = "/api/v1/notifications/scheduled")
-    public void snedScheduledNotifications() {
+    public void snedScheduledNotifications() throws MessagingException {
         notificationService.sendSchedulerNotifications();
     }
 

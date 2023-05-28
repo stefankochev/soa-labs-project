@@ -1,10 +1,13 @@
 package mk.ukim.finki.notifications_service.service.impl;
 
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.extern.log4j.Log4j2;
 import mk.ukim.finki.notifications_service.service.MailService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,17 +28,18 @@ public class MailServiceImpl implements MailService {
      */
     public void sendMail(String to,
                          String subject,
-                         String text) {
+                         String text) throws MessagingException {
 
         log.info("Mail would be sent now to: "+to+"\nSubject: "+subject+"\nWith text: "+text);
 
 //        TODO: Implement mail sending
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setFrom("");
-//        message.setTo(to);
-//        message.setSubject(subject);
-//        message.setText(text);
-//        javaMailSender.send(message);
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        helper.setTo(to);
+        helper.setFrom("soanotificaiton@gmail.com");
+        helper.setSubject(subject);
+        helper.setText(text);
+        javaMailSender.send(mimeMessage);
     }
 
 }

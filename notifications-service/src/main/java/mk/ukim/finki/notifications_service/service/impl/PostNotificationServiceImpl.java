@@ -1,5 +1,6 @@
 package mk.ukim.finki.notifications_service.service.impl;
 
+import jakarta.mail.MessagingException;
 import mk.ukim.finki.notifications_service.model.PostNotification;
 import mk.ukim.finki.notifications_service.model.enumeration.MailStatus;
 import mk.ukim.finki.notifications_service.repository.PostNotificationRepository;
@@ -58,7 +59,7 @@ public class PostNotificationServiceImpl implements PostNotificationService {
     }
 
     @Override
-    public void sendSchedulerNotifications() {
+    public void sendSchedulerNotifications() throws MessagingException {
         List<PostNotification> notifications = this.findAllByStatus(MailStatus.WAITING);
         notifications = notifications.stream()
                 .filter(x -> compareDates(x.getSendDate(), LocalDateTime.now()) <= 0)

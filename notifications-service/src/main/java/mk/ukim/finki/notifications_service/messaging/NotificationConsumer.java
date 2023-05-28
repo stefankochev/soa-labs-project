@@ -2,6 +2,7 @@ package mk.ukim.finki.notifications_service.messaging;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.MessagingException;
 import lombok.extern.log4j.Log4j2;
 import mk.ukim.finki.notifications_service.model.PostNotification;
 import mk.ukim.finki.notifications_service.model.enumeration.MailStatus;
@@ -45,6 +46,8 @@ public class NotificationConsumer {
 
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
 
     }
