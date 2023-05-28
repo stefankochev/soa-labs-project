@@ -15,14 +15,15 @@ Kong/
 │   ├── main.py
 │   └── Dockerfile
 ├── docker-compose.yml
-├── kong.yml
+|── kong/
+|   |── kong.yml
 └── README.md
 ```
 * `app1/` and `app2/` directories contain the source code and Dockerfiles for testing purposes.
 
 * `docker-compose.yml` defines the services and their configurations, including the Kong API Gateway and your backend applications.
 
-* `kong.yml` contains the Kong API Gateway configuration, including services and routes.
+* `kong/` directory contains the  `kong.yml` which contains the Kong API Gateway configuration, including services and routes.
 
 * `README.md` is a Markdown file that provides instructions and information about the project.
 

@@ -8,7 +8,7 @@ services:
   kong:
     image: kong:latest
     volumes:
-      - ./kong.yml:/usr/local/kong/declarative/kong.yml
+      - ./kong/kong.yml:/usr/local/kong/declarative/kong.yml
     environment:
       - KONG_DATABASE=off
       - KONG_DECLARATIVE_CONFIG=/usr/local/kong/declarative/kong.yml
@@ -27,14 +27,14 @@ services:
 
   app1:
     build:
-      context: ./app1 
+      context: ../app1
       dockerfile: Dockerfile 
     networks:
       - kong-net
 
   app2:
     build:
-      context: ./app2 
+      context: ../app2
       dockerfile: Dockerfile 
     networks:
       - kong-net
