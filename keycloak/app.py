@@ -18,7 +18,7 @@ from fastapi_keycloak import (
 from fastapi_keycloak.model import KeycloakCreateUser, KeycloakToken
 
 idp = FastAPIKeycloak(
-    server_url="http://192.168.0.107:8085/auth",
+    server_url="http://192.168.0.108:8085/auth",
     # server_url="http://localhost:8085/auth",
     client_id="soa-client",
     client_secret="GzgACcJzhzQ4j8kWhmhazt7WSdxDVUyE",
@@ -46,22 +46,6 @@ async def keycloak_exception_handler(request: Request, exc: KeycloakError):
 
 
 # Admin
-
-@app.post("/proxy", tags=["admin-cli"])
-def proxy_admin_request(
-        relative_path: str,
-        method: HTTPMethod,
-        additional_headers: dict = Body(None),
-        payload: dict = Body(None),
-):
-    return idp.proxy(
-        additional_headers=additional_headers,
-        relative_path=relative_path,
-        method=method,
-        payload=payload
-    )
-
-
 @app.get("/identity-providers", tags=["admin-cli"])
 def get_identity_providers():
     return idp.get_identity_providers()
@@ -254,4 +238,3 @@ def logout():
 
 if __name__ == '__main__':
     uvicorn.run('app:app', host="0.0.0.0", port=8081)
-
