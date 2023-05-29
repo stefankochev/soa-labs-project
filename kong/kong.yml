@@ -22,4 +22,9 @@ services:
         paths:
           - /notifications-service
 
-  
+  - name: web-frontend
+    url: http://web-frontend:80
+    routes:
+      - name: web-frontend-route
+        paths:
+          - /web-frontend
