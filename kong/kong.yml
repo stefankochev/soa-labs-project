@@ -22,4 +22,14 @@ services:
         paths:
           - /notifications-service
 
+  - name: file-upload-service
+    url: http://file-upload-service:80
+    routes:
+      - name: file-upload-service-route
+        paths:
+          - /file-upload-service
+
+
+
+
   

@@ -16,24 +16,25 @@ services:
     ports:
       - 8000:8000
       - 8001:8001
+      - 8086:8086
       - 8443:8443
       - 8444:8444
-    networks:
-      - kong-net
+    # networks:
+      # - kong-net
 
   app1: # sample app 1
     build:
       context: app1
       dockerfile: Dockerfile
-    networks:
-      - kong-net
+    # networks:
+      # - kong-net
 
   app2: # sample app 2
     build:
       context: app2
       dockerfile: Dockerfile
-    networks:
-      - kong-net
+    # networks:
+      # - kong-net
 
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.0
@@ -41,8 +42,8 @@ services:
       - 2181:2181
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
-    networks:
-      - kafka-network
+    # networks:
+    #   - kafka-network
 
   kafka:
     image: confluentinc/cp-kafka:6.2.0
@@ -55,9 +56,9 @@ services:
       - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-    networks:
-      - kafka-network
-    network_mode: bridge
+    # networks:
+    #   - kafka-network
+    # network_mode: bridge
 
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
@@ -65,8 +66,8 @@ services:
       - 9000:9000
     environment:
       - KAFKA_BROKERCONNECT=kafka:9092
-    networks:
-      - kafka-network
+    # networks:
+    #   - kafka-network
 
   notifications-service:
     build: notifications-service
@@ -74,19 +75,29 @@ services:
       - kafka
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-    networks:
-      - kafka-network
-      - kong-net
+    # networks:
+    #   - kafka-network
+      # - kong-net
 
   web-frontend:
     build: web-frontend
     ports:
       - 80:80
-    networks:
-      - web-frontend
+    # networks:
+    #   - web-frontend
+
+  file-upload-service:
+    build:
+      context: file-upload-service
+      dockerfile: Dockerfile
+    depends_on:
+      - kafka
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
 
-networks:
-  kafka-network:
-  web-frontend:
-  kong-net:
+
+# networks:
+#   kafka-network:
+#   web-frontend:
+#   kong-net:
