@@ -18,13 +18,15 @@ services:
       - 8001:8001
       - 8443:8443
       - 8444:8444
+      # - 8088:8088 
     networks:
       - kong-net
   
   minio: #minio client
     image: minio/minio
     ports:
-      - 9093:9093
+      - "9093:9093"
+      - "9098:9098"
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
@@ -32,33 +34,37 @@ services:
       - ./data:/data
     command: server --address ":9093" \data --console-address ":9098"
     networks:
-      - kafka-network
+      # - kafka-network
+      - virus-file-scanner-network
+      # - kong-net
+    # links:
+    #   - virus-file-scanner-service  
 
   clamav: #clamav client
     image: mkodockx/docker-clamav:alpine
     ports:
-      - 3310:3310
+      - "3310:3310"
     networks:
       - kafka-network
 
-  app1: # sample app 1
-    build:
-      context: app1
-      dockerfile: Dockerfile
-    networks:
-      - kong-net
+  # app1: # sample app 1
+  #   build:
+  #     context: app1
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - kong-net
 
-  app2: # sample app 2
-    build:
-      context: app2
-      dockerfile: Dockerfile
-    networks:
-      - kong-net
+  # app2: # sample app 2
+  #   build:
+  #     context: app2
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - kong-net
 
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.0
     ports:
-      - 2181:2181
+      - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     networks:
@@ -67,7 +73,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:6.2.0
     ports:
-      - 9092:9092
+      - "9092:9092"
     environment:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
@@ -82,44 +88,50 @@ services:
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
     ports:
-      - 9000:9000
+      - "9000:9000"
     environment:
       - KAFKA_BROKERCONNECT=kafka:9092
     networks:
       - kafka-network
 
-  notifications-service:
-    build: notifications-service
-    depends_on:
-      - kafka
-    environment:
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-    networks:
-      - kafka-network
-      - kong-net
+  # notifications-service:
+  #   build: notifications-service
+  #   depends_on:
+  #     - kafka
+  #   environment:
+  #     - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+  #   networks:
+  #     - kafka-network
+  #     - kong-net
 
-  web-frontend:
-    build: web-frontend
-    ports:
-      - 80:80
-    networks:
-      - web-frontend
+  # web-frontend:
+  #   build: web-frontend
+  #   ports:
+  #     - 80:80
+  #   networks:
+  #     - web-frontend
   
   virus-file-scanner-service:
     build: virus-file-scanner-service
     ports:
       - "8088:8088"
     depends_on:
-      - minio
       - kafka
       - clamav
     environment:
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      server.port: 8088
+      server.address: 0.0.0.0
     networks:
       - kafka-network
+      - virus-file-scanner-network
+      # - kong-net
 
 
 networks:
   kafka-network:
+  # virus-file-scanner-network:
+  #   name: virus-file-scanner-network
+  #   external: true
   web-frontend:
   kong-net:
