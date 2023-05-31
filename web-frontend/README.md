@@ -1,5 +1,7 @@
 ﻿**<h1>React Front-end Service with Keycloak utilization</h1>**
 
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/stefankochev/soa-labs-project/tree/web-frontend/web-frontend)  
+
 **<h2>About the service</h2>**
 
 This is a Dockerized service utilizing Vite React to make the front-end part of a Web advertisement platform for apartments. Part of the group microservice-based project for the subject Service Oriented Architecture. Proudly made by students of the Faculty of Computer Science and Engineering: 
