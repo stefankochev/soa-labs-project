@@ -79,7 +79,7 @@ Check if the service is running at http://localhost/. If not, backtrack your ste
 
 **<h2>Dockerization</h2>**
 
-In the repository, there is a Dockerfile which we used in the production of this service. You can use the same or write your own. Just beware to use the node image as the base and import the necessary files (All the js, ts and json files, as well as the src and public directories) and expose the port for access to the React front-end (our project's default port is 80). 
+In the repository, there is a <a href="https://github.com/stefankochev/soa-labs-project/blob/web-frontend/web-frontend/Dockerfile">Dockerfile</a> which we used in the production of this service. You can use the same or write your own. Just beware to use the node image as the base and import the necessary files (All the js, ts and json files, as well as the src and public directories) and expose the port for access to the React front-end (our project's default port is 80). 
 
 After that, build the docker image with: 
 
