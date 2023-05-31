@@ -19,12 +19,10 @@ from fastapi_keycloak.model import KeycloakCreateUser, KeycloakToken
 
 idp = FastAPIKeycloak(
     server_url="http://192.168.0.108:8085/auth",
-    # server_url="http://localhost:8085/auth",
     client_id="soa-client",
     client_secret="GzgACcJzhzQ4j8kWhmhazt7WSdxDVUyE",
     admin_client_secret="BIcczGsZ6I8W5zf0rZg5qSexlloQLPKB",
     realm="SOA",
-    # callback_uri="http://192.168.0.107:8081/callback",
     callback_uri="http://localhost:8081/callback"
 )
 app = FastAPI()
@@ -33,7 +31,7 @@ idp.add_swagger_config(app)
 
 @app.get("/")  # Unprotected
 def root():
-    return 'Hello World'
+    return RedirectResponse(idp.login_uri)
 
 
 # Custom error handler for showing Keycloak errors on FastAPI
@@ -131,33 +129,6 @@ def delete_roles(role_name: str, user: OIDCUser = Depends(idp.get_current_user()
     return idp.delete_role(role_name=role_name)
 
 
-# Group Management
-
-@app.get("/groups", tags=["group-management"])
-def get_all_groups(user: OIDCUser = Depends(idp.get_current_user())):
-    return idp.get_all_groups()
-
-
-@app.get("/group/{group_name}", tags=["group-management"])
-def get_group(group_name: str, user: OIDCUser = Depends(idp.get_current_user())):
-    return idp.get_groups([group_name])
-
-
-@app.get("/group-by-path/{path: path}", tags=["group-management"])
-def get_group_by_path(path: str, user: OIDCUser = Depends(idp.get_current_user())):
-    return idp.get_group_by_path(path)
-
-
-@app.post("/groups", tags=["group-management"])
-def add_group(group_name: str, parent_id: Optional[str] = None, user: OIDCUser = Depends(idp.get_current_user())):
-    return idp.create_group(group_name=group_name, parent=parent_id)
-
-
-@app.delete("/groups", tags=["group-management"])
-def delete_groups(group_id: str, user: OIDCUser = Depends(idp.get_current_user())):
-    return idp.delete_group(group_id=group_id)
-
-
 # User Roles
 
 @app.post("/users/{user_id}/roles", tags=["user-roles"])
@@ -177,33 +148,16 @@ def delete_roles_from_user(user_id: str, roles: Optional[List[str]] = Query(None
     return idp.remove_user_roles(user_id=user_id, roles=roles)
 
 
-# User Groups
+# Auth Flow
 
-@app.post("/users/{user_id}/groups", tags=["user-groups"])
-def add_group_to_user(user_id: str, group_id: str, user: OIDCUser = Depends(idp.get_current_user())):
-    return idp.add_user_group(user_id=user_id, group_id=group_id)
-
-
-@app.get("/users/{user_id}/groups", tags=["user-groups"])
-def get_user_groups(user_id: str, user: OIDCUser = Depends(idp.get_current_user())):
-    return idp.get_user_groups(user_id=user_id)
+@app.get("/login", tags=["auth-flow"])
+def login_redirect():
+    return RedirectResponse(idp.login_uri)
 
 
-@app.delete("/users/{user_id}/groups", tags=["user-groups"])
-def delete_groups_from_user(user_id: str, group_id: str, user: OIDCUser = Depends(idp.get_current_user())):
-    return idp.remove_user_group(user_id=user_id, group_id=group_id)
-
-
-# Example User Requests
-
-@app.get("/protected", tags=["example-user-request"])
-def protected(user: OIDCUser = Depends(idp.get_current_user())):
-    return user
-
-
-@app.get("/current_user/roles", tags=["example-user-request"])
-def get_current_users_roles(user: OIDCUser = Depends(idp.get_current_user())):
-    return user.roles
+@app.get("/callback", tags=["auth-flow"])
+def callback(session_state: str, code: str):
+    return idp.exchange_authorization_code(session_state=session_state, code=code)
 
 
 @app.get("/admin", tags=["example-user-request"])
@@ -216,19 +170,6 @@ def login(user: UsernamePassword = Body(...)):
     return idp.user_login(
         username=user.username, password=user.password.get_secret_value()
     )
-
-
-# Auth Flow
-
-@app.get("/login", tags=["auth-flow"])
-def login_redirect():
-    return RedirectResponse(idp.login_uri)
-    # return idp.login_uri
-
-
-@app.get("/callback", tags=["auth-flow"])
-def callback(session_state: str, code: str):
-    return idp.exchange_authorization_code(session_state=session_state, code=code)
 
 
 @app.get("/logout", tags=["auth-flow"])
