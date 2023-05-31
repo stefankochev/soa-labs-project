@@ -11,6 +11,41 @@ This is a Dockerized service utilizing Vite React to make the front-end part of 
 
 It is currently designed to show its interaction with a configured Keycloak service, but can be upgraded to have extra functionalities in favor of the Web advertisement platform.
 
+**<h2>Project Structure</h2>**
+```
+├── Dockerfile
+├── README.md
+├── diagrams
+│   ├── 1.jpeg
+│   └── 2.jpeg
+├── index.html
+├── nginx.conf
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── public
+│   └── vite.svg
+├── src
+│   ├── App.css
+│   ├── App.tsx
+│   ├── assets
+│   │   └── react.svg
+│   ├── components
+│   │   ├── Home.tsx
+│   │   ├── Nav.tsx
+│   │   ├── Profile.tsx
+│   │   └── ProtectedRoute.tsx
+│   ├── end.d.ts
+│   ├── index.css
+│   ├── keycloak.ts
+│   ├── main.tsx
+│   └── vite-env.d.ts
+├── tailwind.config.js
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+```
+
 **<h2>Architecture Diagram</h2>**
 
 Below is the structure of our service architecture. It uses Vite React running on Node.js server. For connection to the Keycloak service, it utilizes the react-keycloak package. The react-keycloak package is configured via environment variables and it manages the connection by itself. 
