@@ -37,7 +37,7 @@ services:
     restart:
       always
 
-  python_app:
+  keycloak-api:
     build: .
     ports:
       - '8081:8080'
