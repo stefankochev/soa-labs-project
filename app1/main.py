@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 import os
-PATH_ROUTE = os.environ.get("PATH_ROUTE", "")
 
-app = FastAPI(path_route=PATH_ROUTE)
+
+app = FastAPI(root_path = "/app1")
 
 @app.get("/hello")
 async def hello():

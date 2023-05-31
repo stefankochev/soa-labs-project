@@ -57,7 +57,6 @@ services:
       - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
     networks:
       - kafka-network
-    network_mode: bridge
 
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
