@@ -5,6 +5,10 @@ from fastapi import FastAPI, Depends, Query, Body, Request, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import SecretStr
 from starlette.responses import RedirectResponse
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from fastapi_keycloak import (
     FastAPIKeycloak,
@@ -17,23 +21,23 @@ from fastapi_keycloak import (
 )
 from fastapi_keycloak.model import KeycloakCreateUser, KeycloakToken
 
+print(os.environ)
 idp = FastAPIKeycloak(
-    server_url="http://192.168.0.108:8085/auth",
-    # server_url="http://localhost:8085/auth",
-    client_id="soa-client",
-    client_secret="GzgACcJzhzQ4j8kWhmhazt7WSdxDVUyE",
-    admin_client_secret="BIcczGsZ6I8W5zf0rZg5qSexlloQLPKB",
-    realm="SOA",
-    # callback_uri="http://192.168.0.107:8081/callback",
-    callback_uri="http://localhost:8081/callback"
+    server_url=os.getenv("SERVER_URL"),
+    client_id=os.getenv("CLIENT_ID"),
+    client_secret=os.getenv("CLIENT_SECRET"),
+    admin_client_secret=os.getenv("ADMIN_CLIENT_SECRET"),
+    realm=os.getenv("REALM"),
+    callback_uri=os.getenv("CALLBACK_URI")
 )
+print(os.environ)
 app = FastAPI()
 idp.add_swagger_config(app)
 
 
 @app.get("/")  # Unprotected
 def root():
-    return 'Hello World'
+    return RedirectResponse(idp.login_uri)
 
 
 # Custom error handler for showing Keycloak errors on FastAPI
@@ -223,7 +227,6 @@ def login(user: UsernamePassword = Body(...)):
 @app.get("/login", tags=["auth-flow"])
 def login_redirect():
     return RedirectResponse(idp.login_uri)
-    # return idp.login_uri
 
 
 @app.get("/callback", tags=["auth-flow"])
