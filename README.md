@@ -29,6 +29,20 @@ Launches 7 docker containers
 * kafdrop: This container runs Kafdrop, a web UI for monitoring Kafka topics on port `9000`
 * virus-file-scanner-service: This container runs the virus file scanner service on port `8088`
 
+Create a bucket named 'fileuploadvirusscan' and upload some file. You will also need to add a Event Notification Trigger (for uploading files) in the bucket.
+Here are steps to configure event (we have implemented a rest controller and used a webhook to test all the functionality).
+Here are steps to configure event (we have set up a kafka event for the bucket to sent information on the dockerized kafka:9092 to a topic where the virus-file-scanner-service will listen).
+
+![image](https://github.com/stefankochev/soa-labs-project/assets/61638603/c79a7cfb-2d33-42dd-95ff-9a3402899b98)
+![image](https://github.com/stefankochev/soa-labs-project/assets/61638603/5fde8e1b-8837-480a-9dc3-7d1ba297746f)
+![image](https://github.com/stefankochev/soa-labs-project/assets/61638603/ec27319b-2e94-4648-8b91-02cbde25cc0b)
+After creating the Kafka Event in minio, it will ask you to restart MinIO for the appropriate changes to be applied.
+![image](https://github.com/stefankochev/soa-labs-project/assets/61638603/36be5a8a-1d01-430a-ae4e-3c9ce36591e6)
+![image](https://github.com/stefankochev/soa-labs-project/assets/61638603/09dea707-578c-49a1-b1a0-bfb8cd75b0dc)
+
+After this, upload a file to the bucket. MinIO will send appropriate WebHookPayload on the kafka topic ('test-topic') which you can check it on - http://localhost:9000/topic/test-topic/messages.
+
+Then open: http://localhost:9000/topic/file-scan-topic/messages and http://localhost:9000/topic/corrupted-file-topic/messages to check the kafka message brokers.
 
 ### Accessing The Endpoints
 
