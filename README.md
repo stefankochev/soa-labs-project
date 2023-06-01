@@ -33,8 +33,13 @@ Kong/
 
 Launches 3 docker containers
 * `kong` starts [`Kong API Gateway`](https://konghq.com/) with ports `8000` for the public API and `8001` for the Admin API
-* `app1` starts [`FastAPI`](https://fastapi.tiangolo.com/) application with port `81`
-* `app2` starts [`FastAPI`](https://fastapi.tiangolo.com/) application with port `80`
+* `app1` starts [`FastAPI`](https://fastapi.tiangolo.com/) application
+* `app2` starts [`FastAPI`](https://fastapi.tiangolo.com/) application
+* `notification-service` starts the notification service
+
+## Component Diagram
+
+![diagram](kong/Diagram.png)
 
 ## Accessing The Endpoints
 
@@ -43,7 +48,6 @@ To access the services through Kong API Gateway, use the following URLs:
 * `http://localhost:8000/app1/{end-point}`: Accesses the `/{end-point}` endpoint of app1 service.
 * `http://localhost:8000/app2/{end-point}`: Accesses the `/{end-point}` endpoint of app2 service.
 * `http://localhost:8000/notifications-service/{end-point}`: Accesses the `/{end-point}` endpoint of notifications service
-* `http://localhost:8000/kafdrop/{end-point}`: Accesses the `/{end-point}` endpoint of kafdrop
 
 ## Troubleshooting
 

@@ -80,9 +80,10 @@ services:
 
   web-frontend:
     build: web-frontend
+    ports:
+      - 80:80
     networks:
       - web-frontend
-      - kong-net
 
 networks:
   kafka-network:
