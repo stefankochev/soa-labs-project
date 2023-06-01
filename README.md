@@ -28,11 +28,6 @@ Launches 7 docker containers
 * kafdrop: This container runs Kafdrop, a web UI for monitoring Kafka topics on port `9000`
 * virus-file-scanner-service: This container runs the virus file scanner service on port `8088`
 
-
-After this, upload a file to the bucket. MinIO will send appropriate WebHookPayload on the kafka topic ('test-topic') which you can check it on - http://localhost:9000/topic/test-topic/messages.
-
-Then open: http://localhost:9000/topic/file-scan-topic/messages and http://localhost:9000/topic/corrupted-file-topic/messages to check the kafka message brokers.
-
 ### Accessing The Endpoints
 
 After running the containers:  
