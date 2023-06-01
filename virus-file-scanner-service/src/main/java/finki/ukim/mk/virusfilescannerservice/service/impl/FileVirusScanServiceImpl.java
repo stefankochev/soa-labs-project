@@ -1,9 +1,10 @@
 package finki.ukim.mk.virusfilescannerservice.service.impl;
 
 import fi.solita.clamav.ClamAVClient;
-import finki.ukim.mk.virusfilescannerservice.model.MinioUploadedFile;
-import finki.ukim.mk.virusfilescannerservice.model.VirusScanResponse;
+import finki.ukim.mk.virusfilescannerservice.model.WebhookPayload;
 import finki.ukim.mk.virusfilescannerservice.service.FileVirusScanService;
+import io.minio.MinioClient;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,40 +14,55 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class FileVirusScanServiceImpl implements FileVirusScanService {
 
-    private final ClamAVClient clamAVClient;
-    private final KafkaTemplate<String, VirusScanResponse> kafkaTemplate;
+    @Value("${minio.bucketName}")
+    private String minioBucket;
 
-    public FileVirusScanServiceImpl(ClamAVClient clamAVClient, KafkaTemplate<String, VirusScanResponse> kafkaTemplate) {
+    private final ClamAVClient clamAVClient;
+    private final MinioClient minioClient;
+    private final KafkaTemplate<String, Boolean> kafkaTemplate;
+
+    public FileVirusScanServiceImpl(ClamAVClient clamAVClient, MinioClient minioClient, KafkaTemplate<String, Boolean> kafkaTemplate) {
         this.clamAVClient = clamAVClient;
+        this.minioClient = minioClient;
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @KafkaListener(topics = "file-scan-topic")
-    public void scanFileForViruses(MinioUploadedFile file) {
-        VirusScanResponse fileScanResponse = new VirusScanResponse();
-        fileScanResponse.setFileName(file.getFileName());
+    @KafkaListener(topics = "file-scan-topic", groupId = "virus-file-scanner-group")
+    public void scanFileForViruses(WebhookPayload payload) {
+        Boolean isInfected = false;
         try {
             log.info("Kafka message was recieved here.");
             // Scan the file using ClamAV
-            byte[] fileInputStream = file.getFileInputStream();
-            boolean isInfected = this.clamAVClient.isCleanReply(fileInputStream);
+
+            // in Object.key we have the name of the object
+            String objectName = payload.getRecords().get(0).getS3().getObject().getKey();
+            byte[] fileInputStream = minioClient.getObject(minioBucket, objectName).readAllBytes();
+
+            isInfected = this.clamAVClient.isCleanReply(fileInputStream);
 
             if (isInfected) {
                 // Infected file detected
                 System.out.println("The file is infected, and will be blocked.");
-                fileScanResponse.setDetectedVirus(true);
             } else {
                 // File is clean
                 System.out.println("The file is clean.");
-                fileScanResponse.setDetectedVirus(false);
             }
-            fileScanResponse.setErrorMessage(null);
-            kafkaTemplate.send("corrupted-file-topic", fileScanResponse);
+            sendIfFileInfected(isInfected);
+            log.info("File scanned with ClamAV client.");
         } catch (Exception e) {
             // Handle exceptions
             e.printStackTrace();
-            fileScanResponse.setErrorMessage(e.getMessage());
-            kafkaTemplate.send("corrupted-file-topic", fileScanResponse);
+            log.info("File not scanned succesfully.");
+        }
+    }
+
+    public void sendIfFileInfected(Boolean isInfected){
+        try {
+            kafkaTemplate.send("corrupted-file-topic", isInfected);
+            log.info("Kafka sent a message.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("Exception thrown in method sendIfFileInfected.");
         }
     }
 

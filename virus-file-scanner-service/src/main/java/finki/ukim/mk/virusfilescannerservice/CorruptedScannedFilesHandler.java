@@ -1,13 +1,14 @@
 package finki.ukim.mk.virusfilescannerservice;
 
-import finki.ukim.mk.virusfilescannerservice.model.VirusScanResponse;
 import io.minio.MinioClient;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
+@Log4j2
 public class CorruptedScannedFilesHandler {
 
     private final MinioClient minioClient;
@@ -19,19 +20,18 @@ public class CorruptedScannedFilesHandler {
         this.minioClient = minioClient;
     }
 
-    @KafkaListener(topics = "corrupted-file-topic")
-    public void checkCorruptedFile(VirusScanResponse virusScanResponse) {
+    @KafkaListener(topics = "corrupted-file-topic", groupId = "virus-file-scanner-group")
+    public void checkCorruptedFile(Boolean isInfected) {
         try {
-            boolean isCorrupted = virusScanResponse.getDetectedVirus();
-            if (isCorrupted) {
+            if (isInfected) {
                 // Remove the corrupted file from Minio
-                minioClient.removeObject(minioBucket, virusScanResponse.getFileName());
+//                minioClient.removeObject(minioBucket, virusScanResponse.getFileName());
                 // Update database entries as corrupted
 //                updateDatabaseEntry(fileName);
-                System.out.println("Corrupted file removed: " + virusScanResponse.getFileName());
+//                System.out.println("Corrupted file removed: " + virusScanResponse.getFileName());
             } else {
                 // File is not corrupted, continue processing
-                System.out.println("Non-corrupted file: " + virusScanResponse.getFileName());
+//                System.out.println("Non-corrupted file: " + virusScanResponse.getFileName());
                 // Further processing logic goes here
             }
         } catch (Exception e) {

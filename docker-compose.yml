@@ -18,7 +18,6 @@ services:
       - 8001:8001
       - 8443:8443
       - 8444:8444
-      # - 8088:8088 
     networks:
       - kong-net
   
@@ -34,11 +33,8 @@ services:
       - ./data:/data
     command: server --address ":9093" \data --console-address ":9098"
     networks:
-      # - kafka-network
+      - kafka-network
       - virus-file-scanner-network
-      # - kong-net
-    # links:
-    #   - virus-file-scanner-service  
 
   clamav: #clamav client
     image: mkodockx/docker-clamav:alpine
@@ -47,19 +43,19 @@ services:
     networks:
       - kafka-network
 
-  # app1: # sample app 1
-  #   build:
-  #     context: app1
-  #     dockerfile: Dockerfile
-  #   networks:
-  #     - kong-net
+  app1: # sample app 1
+    build:
+      context: app1
+      dockerfile: Dockerfile
+    networks:
+      - kong-net
 
-  # app2: # sample app 2
-  #   build:
-  #     context: app2
-  #     dockerfile: Dockerfile
-  #   networks:
-  #     - kong-net
+  app2: # sample app 2
+    build:
+      context: app2
+      dockerfile: Dockerfile
+    networks:
+      - kong-net
 
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.0
@@ -77,6 +73,7 @@ services:
     environment:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
       - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
@@ -94,22 +91,24 @@ services:
     networks:
       - kafka-network
 
-  # notifications-service:
-  #   build: notifications-service
-  #   depends_on:
-  #     - kafka
-  #   environment:
-  #     - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-  #   networks:
-  #     - kafka-network
-  #     - kong-net
+  notifications-service:
+    build: notifications-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - kafka
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - kafka-network
+      - kong-net
 
-  # web-frontend:
-  #   build: web-frontend
-  #   ports:
-  #     - 80:80
-  #   networks:
-  #     - web-frontend
+  web-frontend:
+    build: web-frontend
+    ports:
+      - 80:80
+    networks:
+      - web-frontend
   
   virus-file-scanner-service:
     build: virus-file-scanner-service
@@ -119,9 +118,7 @@ services:
       - kafka
       - clamav
     environment:
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      server.port: 8088
-      server.address: 0.0.0.0
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks:
       - kafka-network
       - virus-file-scanner-network
@@ -130,8 +127,6 @@ services:
 
 networks:
   kafka-network:
-  # virus-file-scanner-network:
-  #   name: virus-file-scanner-network
-  #   external: true
+  virus-file-scanner-network:
   web-frontend:
   kong-net:
