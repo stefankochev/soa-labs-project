@@ -28,8 +28,15 @@ services:
       - name: file-upload-service-route
         paths:
           - /file-upload-service
+        # plugins:
+        # - name: minio
+        #   config:
+        #     bucket: my-bucket
+        #     endpoint: http://localhost:9100
+        #     access_key: minio-access-key
+        #     secret_key: minio-secret-key
+        #     paths:
+        #       - /upload
+        #       - /download
 
 
-
-
-  

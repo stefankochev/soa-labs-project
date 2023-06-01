@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY main.py .
 
-RUN pip install fastapi uvicorn
+RUN pip install fastapi uvicorn --no-cache-dir minio
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
