@@ -1,0 +1,48 @@
+version: '3'
+
+
+services:
+  postgres:
+    image: postgres:alpine
+    environment:
+      POSTGRES_DB: soakeycloakdb
+      POSTGRES_USER: soakeycloakuser
+      POSTGRES_PASSWORD: soakeycloakpassword
+    restart:
+      always
+
+  keycloak:
+    image: jboss/keycloak:16.1.0
+    volumes:
+      - ./realm-export.json:/opt/jboss/keycloak/imports/realm-export.json
+    command:
+      - "-b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: soakeycloakdb
+      DB_USER: soakeycloakuser
+      DB_SCHEMA: public
+      DB_PASSWORD: soakeycloakpassword
+      KEYCLOAK_USER: soa
+      KEYCLOAK_PASSWORD: soa
+      PROXY_ADDRESS_FORWARDING: "true"
+      KEYCLOAK_LOGLEVEL: DEBUG
+    ports:
+      - '8085:8080'
+    depends_on:
+      - postgres
+    expose:
+      - 8005
+    restart:
+      always
+
+  keycloak-api:
+    build: .
+    ports:
+      - '8081:8080'
+    depends_on:
+      - postgres
+      - keycloak
+    restart:
+      always
