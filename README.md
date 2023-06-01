@@ -53,4 +53,7 @@ After running the containers:
 
 Within the virus-file-scanner-service a rest controller is created (WebHookMinioController) which is responsible for handling webhook events triggered by MinIO object uploads, it serves for testing and receiving notifications from MinIO when  a new file is uploaded.
 
+### Diagram
+
+![Diagram](https://github.com/stefankochev/soa-labs-project/assets/94235179/6a309c9b-403a-45b1-86a2-5350e1a8b57b)
 
