@@ -1,6 +1,6 @@
 ## Service Oriented Architecture - Microservices - Labs Project
 
-###Project Structure
+### Project Structure
 
 `notification-service` is a  directory that contains the source code for receiving a notification when a file in posted on MinIO and needs to be scanned for viruses
 `virus-file-scanner-service` is a directory that includes several components that handle file uploads, virus scanning, and handling of corrupted files. They communicate with each other using Kafka as the messaging system.
@@ -13,7 +13,7 @@
 
 `README.md` - Markdown file that provides the documentation, instruction and information about the project.
 
-###Running
+### Running
 
 `docker compose up`
 
@@ -27,7 +27,7 @@ Launches 7 docker containers
 	7. virus-file-scanner-service: This container runs the virus file scanner service on port `8088`
 
 
-###Accessing The Endpoints
+### Accessing The Endpoints
 
 After running the containers:
 1.Kong:
@@ -46,7 +46,6 @@ After running the containers:
 6.Virus File Scanner Service:
 	- Virus File Scanner API: The Virus File Scanner Service API is accessible at `http://localhost:8088`.
 
-###Testing
+### Testing
 
 Within the virus-file-scanner-service a rest controller is created (WebHookMinioController) which is responsible for handling webhook events triggered by MinIO object uploads, it serves for testing and receiving notifications from MinIO when  a new file is uploaded.
-![image](https://github.com/stefankochev/soa-labs-project/assets/94235179/d8b65986-08a1-4d72-ba65-75a08dc9b4c4)
